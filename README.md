@@ -14,3 +14,6 @@ no sharestreamlit
 https://diocovidapp.streamlit.app/
 
 plotly tambem tem cloud
+
+se quiser um mapa folium
+vc pode usar um estrutura que insere um html que contem o folium
