@@ -16,4 +16,5 @@ https://diocovidapp.streamlit.app/
 plotly tambem tem cloud
 
 se quiser um mapa folium
-vc pode usar um estrutura que insere um html que contem o folium
+st.write("[https://python-visualization.github.io/folium/latest/getting_started.html]")
+st.write("[https://folium.streamlit.app/]")

@@ -4,6 +4,7 @@ import folium
 from streamlit_folium import st_folium
 import streamlit as st
 import requests
+import rasterio as rio
 
 
 df = pd.read_csv(
@@ -165,8 +166,100 @@ st.write(
 m = folium.Map((45.5236, -122.6750), tiles="cartodb positron")
 folium.LayerControl().add_to(m)
 
-st_data = st_folium(m, width=725)
-###################
 
+def callback():
+    st.toast(f"Current zoom: {st.session_state['my_map']['zoom']}")
+    st.toast(f"Current center: {st.session_state['my_map']['center']}")
+
+
+st_data = st_folium(m, width=725, key="my_map", on_change=callback)
+###################
+st.title("Com Desenho")
+st.write(
+    "The default tiles are set to `OpenStreetMap`, but a selection of tilesets are also built in."
+)
+
+
+m = folium.Map(location=[39.949610, -75.150282], zoom_start=5)
+Draw(export=True).add_to(m)
+
+c1, c2 = st.columns(2)
+with c1:
+    output = st_folium(m, width=700, height=500)
+
+with c2:
+    st.write(output)
+
+#######
+# If you want to dynamically add or remove items from the map,
+# add them to a FeatureGroup and pass it to st_folium
+fg = folium.FeatureGroup(name="State bounds")
+fg.add_child(folium.features.GeoJson(bounds))
+
+capitals = STATE_DATA
+
+for capital in capitals.itertuples():
+    fg.add_child(
+        folium.Marker(
+            location=[capital.latitude, capital.longitude],
+            popup=f"{capital.capital}, {capital.state}",
+            tooltip=f"{capital.capital}, {capital.state}",
+            icon=(
+                folium.Icon(color="green")
+                if capital.state == st.session_state["selected_state"]
+                else None
+            ),
+        )
+    )
+
+out = st_folium(
+    m,
+    feature_group_to_add=fg,
+    center=center,
+    width=1200,
+    height=500,
+)
+
+###################
+st.title("Raster")
+st.write(
+    "The default tiles are set to `OpenStreetMap`, but a selection of tilesets are also built in."
+)
+# representation of the generated raster
+elevRaster = rasterio.open("elevationClipped.tif")
+elevArray = elevRaster.read(1)
+
+boundList = [x for x in elevRaster.bounds]
+boundList
+
+# get rid of the nan for color interpretation
+elevArray = np.nan_to_num(elevArray)
+
+rasLon = (boundList[3] + boundList[1]) / 2
+rasLat = (boundList[2] + boundList[0]) / 2
+mapCenter = [rasLon, rasLat]
+# Create a Folium map centered at a specific location
+m = folium.Map(location=mapCenter, zoom_start=9)
+
+# Add raster overlay
+image = folium.raster_layers.ImageOverlay(
+    image=elevArray,
+    bounds=[[boundList[1], boundList[0]], [boundList[3], boundList[2]]],
+    opacity=0.6,
+    interactive=True,
+    cross_origin=False,
+)
+image.add_to(m)
+
+# Add layer control
+folium.LayerControl().add_to(m)
+
+# Display the map
+st_data = st_folium(m, width=725)
+
+#######
 st.write("[https://python-visualization.github.io/folium/latest/getting_started.html]")
 st.write("[https://folium.streamlit.app/]")
+st.write(
+    "(Folium examples )[https://github.com/python-visualization/folium/tree/main/examples]"
+)
