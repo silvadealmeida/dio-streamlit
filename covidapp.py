@@ -43,7 +43,7 @@ column = st.sidebar.selectbox("Escolha o estado", colunas)
 fig = px.line(df, x="date", y=column, title=column + " - " + state)
 fig.update_layout(xaxis_title="Data", yaxis_title=column.upper(), title={"x": 0.5})
 
-st.title("Dados Covida - Brasil")
+st.title("Plotly - Dados Covida - Brasil")
 st.write(
     "Nessa aplicacao os usarios tem a apcao de escolher informacao por tipo e estado"
 )
@@ -226,7 +226,7 @@ st.write(
     "The default tiles are set to `OpenStreetMap`, but a selection of tilesets are also built in."
 )
 # representation of the generated raster
-elevRaster = rasterio.open("elevationClipped.tif")
+elevRaster = rio.open("elevationClipped.tif")
 elevArray = elevRaster.read(1)
 
 boundList = [x for x in elevRaster.bounds]
