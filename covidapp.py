@@ -66,7 +66,7 @@ add_slider = st.sidebar.slider("Select a range of values", 0.0, 100.0, (25.0, 75
 
 
 # Mapa Testes
-st.title("Teste com Mapas")
+st.title("Folium - Teste com Mapas")
 ############################# mapa 3 - Vectors such as lines
 st.title("Vectors such as lines")
 
