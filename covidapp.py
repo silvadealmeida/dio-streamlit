@@ -1,11 +1,33 @@
 import pandas as pd
 import plotly.express as px
 import folium
+from folium.plugins import Draw
 from streamlit_folium import st_folium
 import streamlit as st
 import requests
+import time
 import rasterio as rio
 
+
+# Se quiser configurar a pagina para ficar full
+st.set_page_config(layout="wide")
+
+st.header("ver aplicacao")
+st.write("[https://diocovidapp.streamlit.app/]")
+
+"Starting a long computation..."
+
+# Add a placeholder
+latest_iteration = st.empty()
+bar = st.progress(0)
+
+for i in range(100):
+    # Update the progress bar with each iteration.
+    latest_iteration.text(f"Iteration {i+1}")
+    bar.progress(i + 1)
+    time.sleep(0.1)
+
+"...and now we're done!"
 
 df = pd.read_csv(
     "https://raw.githubusercontent.com/wcota/covid19br/refs/heads/master/cases-brazil-states.csv"
@@ -42,6 +64,7 @@ column = st.sidebar.selectbox("Escolha o estado", colunas)
 
 fig = px.line(df, x="date", y=column, title=column + " - " + state)
 fig.update_layout(xaxis_title="Data", yaxis_title=column.upper(), title={"x": 0.5})
+
 
 st.title("Plotly - Dados Covida - Brasil")
 st.write(
@@ -172,7 +195,9 @@ def callback():
     st.toast(f"Current center: {st.session_state['my_map']['center']}")
 
 
-st_data = st_folium(m, width=725, key="my_map", on_change=callback)
+st_data = st_folium(m, width=1000, key="my_map", on_change=callback)
+# sem width
+# st_data = st_folium(m, key="my_map", on_change=callback)
 ###################
 st.title("Com Desenho")
 st.write(
