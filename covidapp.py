@@ -168,4 +168,5 @@ folium.LayerControl().add_to(m)
 st_data = st_folium(m, width=725)
 ###################
 
-'Criado com (Streamlit and Folium)'[https://python-visualization.github.io/folium/latest/getting_started.html]
+st.write("[https://python-visualization.github.io/folium/latest/getting_started.html]")
+st.write("[https://folium.streamlit.app/]")
